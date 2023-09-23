@@ -1,6 +1,6 @@
 import random
 
-# FUNCION PARA INICIALIZAR MATRICES QUE SERAN MODIFICADAS PARA MOSTRAR POR CONSOLA
+# Funcion para inicilizar matrices que luego seran modificadas para mostrar por consola
 def inicializar_matriz():
     matriz = [
     ["-", "-", "-", "-", "-", "-", "-", "-", "-"],
@@ -15,45 +15,48 @@ def inicializar_matriz():
     ]
     return matriz
 
+# Funcion para generar los barcos de la computadora
 def inicializar_matriz_computadora():
-    matriz = [
-    ["-", "-", "-", "-", "-", "-", "-", "-", "-"],
-    ["-", "-", "-", "-", "-", "-", "-", "-", "-"],
-    ["-", "-", "-", "-", "-", "-", "-", "-", "-"],
-    ["-", "-", "-", "-", "-", "-", "-", "-", "-"],
-    ["-", "-", "-", "-", "-", "-", "-", "-", "-"],
-    ["-", "-", "-", "-", "-", "-", "-", "-", "-"],
-    ["-", "-", "-", "-", "-", "-", "-", "-", "-"],
-    ["-", "-", "-", "-", "-", "-", "-", "-", "-"],
-    ["-", "-", "-", "-", "-", "-", "-", "-", "-"]
-    ]
+    matriz = inicializar_matriz()
 
+    # Logica para colocar los barcos
     n = 4
+    es_valido = False
     while n > 0:
         if n == 2 or n == 1:
             m = n + 1
         else:
             m = n
-        posicion_barco = random.randint(0, 1)
-        fila = random.randint(0, 8 - m)
-        columna = random.randint(0, 9 - m)
+        
+        while es_valido is False:
+            posicion_barco = random.randint(0, 1) # 0 para vertical, 1 para horizontal
+            fila = random.randint(0, 8 - m)
+            columna = random.randint(0, 9 - m)
+            es_valido = validar_barcos_computadora(posicion_barco, fila, columna, matriz, m)
         
         if posicion_barco == 0:
             for i in range(m):
-                if matriz[fila + i][columna] != "X":
-                    matriz[fila + i][columna] = "X"
-                else:
-                    n +=  1    
+                 matriz[fila + i][columna] = "X"   
         else:
-            for i in range(m):
-                if matriz[fila][columna + i] != "X":  
-                    matriz[fila][columna + i] = "X" 
-                else:
-                    n +=  1  
+            for i in range(m): 
+                matriz[fila][columna + i] = "X" 
         n -= 1           
     return matriz  
 
-# FUNCION PARA MOSTRAR LOS TABLEROS POR CONSOLA
+# Funcion de validacion de los barcos de la computadora antes que se coloquen
+def validar_barcos_computadora(posicion_barco, fila, columna, matriz, m):
+    if posicion_barco == 0:
+        for i in range(m):
+            if matriz[fila + i][columna] == "X":
+                return False
+
+    else:
+        for i in range(m):
+            if matriz[fila][columna + i] == "X":  
+                return False
+    return True
+
+# Funcion para mostrar los tablero por consola
 def mostrar_tablero(matriz):
     cadena = ""
     cadena += "  A B C D E F G H I"
@@ -66,7 +69,19 @@ def mostrar_tablero(matriz):
             cadena += valor + " "
     return cadena    
 
-# FUNCION PARA HACER EL PROCESO DEL USUARIO PONIENDO SUS BARCOS
+# Funcion para separar las coordenadas ( "A1 A4" --> ["A1", "A4"] )
+def separar_coordenadas(cadena):
+    espacio = 0
+    coordenadas_separadas = [""]
+    for i in range(len(cadena)):
+        if cadena[i] == " ": # Detecta un espacio e inicializa otro indice en la lista
+            espacio += 1
+            coordenadas_separadas.append("")
+        else:
+            coordenadas_separadas[espacio] += cadena[i] 
+    return coordenadas_separadas
+
+# Funcion para que el usuario coloque sus barcos
 def solicitar_barcos():
     matriz_jugador = inicializar_matriz() # INICIALIZAMOS LA MATRIZ DEL USUARIO
     barco1 = input("Ingrese las coordenadas iniciales y finales para colocar su barco (Ejemplo: A1 A4) '\n' Barco 1 (4 celdas):")
@@ -103,24 +118,25 @@ def solicitar_barcos():
 
     return matriz_jugador
 
-# FUNCION PARA SEPARAR COORDENADAS DE LOS BARCOS
-def separar_coordenadas(cadena):
-    espacio = 0
-    coordenadas_separadas = [""]
-    for i in range(len(cadena)):
-        if cadena[i] == " ":
-            espacio += 1
-            coordenadas_separadas.append("")
-        else:
-            coordenadas_separadas[espacio] += cadena[i] 
-    return coordenadas_separadas
-
+# Funcion para colocar los barcos del usuario
 def colocar_barco(barco, matriz, n_barco):
-    caracteres_validos = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "0", "1", "2", "3", "4", "5", "6", "7", "8"]
+    # Validacion
+    columnas_validas = ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
+    filas_validas = ["0", "1", "2", "3", "4", "5", "6", "7", "8"]
+    if len(barco) != 2:
+        return None
     for i in barco:
+        contador = 0
+        if len(i) != 2:
+            return None
         for j in i:
-            if j not in caracteres_validos:
-                return None
+            if contador % 2 == 0:
+                if j not in columnas_validas:
+                    return None
+            else:
+                if j not in filas_validas:
+                    return None
+            contador += 1
     
     primer_coordenada = barco[0]
     ultima_coordenada = barco[1]
@@ -148,20 +164,43 @@ def colocar_barco(barco, matriz, n_barco):
                 return None           
     return matriz  
 
+# Funcion del ataque del jugador
 def ataque_jugador(matriz_visible, matriz_computadora, contador):
     coordenadas_ataque = input("Ingrese las coordenadas para atacar (Ejemplo: A1): ")
-    columna_coordenadas = ord(coordenadas_ataque[0]) - 65
-    fila_coordenadas = int(coordenadas_ataque[1])
-    while coordenadas_ataque[0] not in ["A", "B", "C", "D", "E", "F", "G", "H", "I"] or coordenadas_ataque[1] not in ["0", "1", "2", "3", "4", "5", "6", "7", "8"]:
+    while coordenadas_ataque[0] not in ["A", "B", "C", "D", "E", "F", "G", "H", "I"] or coordenadas_ataque[1] not in ["0", "1", "2", "3", "4", "5", "6", "7", "8"] or len(coordenadas_ataque) != 2:
         coordenadas_ataque = input("Coordenadas no validas. Ingrese nuevamente las coordenadas para atacar (Ejemplo: A1): ")
         columna_coordenadas = ord(coordenadas_ataque[0]) - 65
         fila_coordenadas = int(coordenadas_ataque[1])
+    columna_coordenadas = ord(coordenadas_ataque[0]) - 65
+    fila_coordenadas = int(coordenadas_ataque[1])
     if matriz_computadora[fila_coordenadas][columna_coordenadas] == "X":
-        matriz_visible[fila_coordenadas][columna_coordenadas] = "X"
+        matriz_visible[fila_coordenadas][columna_coordenadas] = "T"
+        matriz_computadora[fila_coordenadas][columna_coordenadas] = "T"
         contador += 1
         print("Acertaste! Has impactado en un barco enemigo.")
     else:
-        matriz_visible[fila_coordenadas][columna_coordenadas] = "O"
-        print("Fallaste! No has impactado en un barco enemigo.")
+        if matriz_computadora[fila_coordenadas][columna_coordenadas] == "T":
+            print("Ya habias disparado ahi, perdiste el turno!")
+        else:
+            matriz_visible[fila_coordenadas][columna_coordenadas] = "O"
+            print("Fallaste! No has impactado en un barco enemigo.")
     print(mostrar_tablero(matriz_visible))
     return contador
+
+# Funcion del ataque de la computadora
+def ataque_computadora(matriz, contador_computadora):
+    fila = random.randint (0 , 8)
+    columna = random.randint (0 , 8)
+    
+    while matriz [fila][columna] != "T" and matriz [fila][columna] != "O":
+        fila = random.randint (0 , 8)
+        columna = random.randint (0 , 8)
+        if matriz [fila][columna] == "X":
+            matriz [fila][columna] = "T"
+            contador_computadora += 1
+            print("La computadora ha tocado tu barco")
+        else:
+            matriz [fila][columna] = "O"
+            print("La computadora ha fallado a tu barco")
+        print(mostrar_tablero(matriz))
+    return contador_computadora
