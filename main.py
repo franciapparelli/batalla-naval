@@ -18,3 +18,7 @@ while contador_jugador < 12 and contador_computadora < 12: # 12 = Numero de acie
     contador_jugador = ataque_jugador(matriz, matriz_computadora, contador_jugador)
     contador_computadora = ataque_computadora(matriz_jugador, contador_computadora)
 print("Termino El Juego")
+if contador_jugador == 12:
+    print("Has ganado")
+else:
+    print("Has perdido")

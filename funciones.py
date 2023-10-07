@@ -40,7 +40,8 @@ def inicializar_matriz_computadora():
         else:
             for i in range(m): 
                 matriz[fila][columna + i] = "X" 
-        n -= 1           
+        n -= 1
+        es_valido = False           
     return matriz  
 
 # Funcion de validacion de los barcos de la computadora antes que se coloquen
@@ -91,6 +92,8 @@ def solicitar_barcos():
         barco1 = input("Ingrese las coordenadas iniciales y finales para colocar su barco (Ejemplo: A1 A4) '\n' Barco 1 (4 celdas):")
         barco1 = separar_coordenadas(barco1)
     print("Barcos colocados correctamente.")
+    print(mostrar_tablero(matriz_jugador))
+    
 
     barco2 = input("Ingrese las coordenadas iniciales y finales para colocar su barco (Ejemplo: A1 A4) '\n' Barco 2 (3 celdas):")
     barco2 = separar_coordenadas(barco2)
@@ -98,7 +101,8 @@ def solicitar_barcos():
         print("Las coordenadas ingresadas no son válidas!!") 
         barco2 = input("Ingrese las coordenadas iniciales y finales para colocar su barco (Ejemplo: A1 A4) '\n' Barco 2 (3 celdas):")
         barco2 = separar_coordenadas(barco2)
-    
+    print("Barcos colocados correctamente.")
+    print(mostrar_tablero(matriz_jugador))
 
     barco3 = input("Ingrese las coordenadas iniciales y finales para colocar su barco (Ejemplo: A1 A4) '\n' Barco 3 (3 celdas):")
     barco3 = separar_coordenadas(barco3)
@@ -106,7 +110,8 @@ def solicitar_barcos():
         print("Las coordenadas ingresadas no son válidas!!") 
         barco3 = input("Ingrese las coordenadas iniciales y finales para colocar su barco (Ejemplo: A1 A4) '\n' Barco 3 (3 celdas):")
         barco3 = separar_coordenadas(barco3)
-    
+    print("Barcos colocados correctamente.")
+    print(mostrar_tablero(matriz_jugador))
 
     barco4 = input("Ingrese las coordenadas iniciales y finales para colocar su barco (Ejemplo: A1 A4) '\n' Barco 4 (2 celdas):")
     barco4 = separar_coordenadas(barco4)
@@ -114,7 +119,8 @@ def solicitar_barcos():
         print("Las coordenadas ingresadas no son válidas!!") 
         barco4 = input("Ingrese las coordenadas iniciales y finales para colocar su barco (Ejemplo: A1 A4) '\n' Barco 4 (2 celdas):")
         barco4 = separar_coordenadas(barco4)
-    
+    print("Barcos colocados correctamente.")
+    print(mostrar_tablero(matriz_jugador))
 
     return matriz_jugador
 
